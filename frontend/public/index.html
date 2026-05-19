@@ -1,0 +1,1792 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>HoopValue — Dynasty Fantasy Basketball Power Rankings</title>
+<meta name="description" content="Analyze your Sleeper, ESPN, or Fantrax dynasty fantasy basketball league with HoopValue's free league power rankings. See how your team stacks up, who has the strongest positional groups, and share standings with your leaguemates." />
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,800;1,9..144,400&family=JetBrains+Mono:wght@400;600&family=Inter+Tight:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --bg: #0b0d10;
+    --bg-2: #14171c;
+    --bg-3: #1c2128;
+    --ink: #f4efe6;
+    --ink-dim: #a8a59c;
+    --ink-mute: #6e6b62;
+    --line: #2a2f37;
+    --court: #d97706;
+    --court-lit: #f59e0b;
+    --pos-g: #38bdf8;
+    --pos-f: #34d399;
+    --pos-c: #fbbf24;
+    --up: #4ade80;
+    --down: #f87171;
+    --orphan: #f87171;
+    --dispersal: #6e6b62;
+    --max: 1240px;
+  }
+  *, *::before, *::after { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'Inter Tight', system-ui, sans-serif;
+    font-size: 15px;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+    background-image:
+      radial-gradient(ellipse 800px 400px at 15% -5%, rgba(217, 119, 6, 0.10), transparent 60%),
+      radial-gradient(ellipse 600px 300px at 95% 8%, rgba(56, 189, 248, 0.05), transparent 60%);
+    min-height: 100vh;
+  }
+  a { color: inherit; text-decoration: none; }
+  button { font-family: inherit; cursor: pointer; }
+
+  /* ============================ HEADER ============================ */
+  header.site {
+    position: sticky; top: 0; z-index: 50;
+    background: rgba(11,13,16,0.92);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border-bottom: 1px solid var(--line);
+  }
+  .top-banner {
+    background: linear-gradient(90deg, rgba(217,119,6,0.15), rgba(217,119,6,0.05));
+    text-align: center;
+    padding: 8px 24px;
+    font-size: 13px;
+    color: var(--ink-dim);
+    border-bottom: 1px solid var(--line);
+  }
+  .top-banner a { color: var(--court-lit); font-weight: 600; }
+  .top-banner a:hover { text-decoration: underline; }
+
+  .nav {
+    max-width: var(--max);
+    margin: 0 auto;
+    padding: 12px 24px;
+    display: flex;
+    align-items: center;
+    gap: 24px;
+  }
+  .logo {
+    display: flex; align-items: center; gap: 10px;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 24px;
+    letter-spacing: 0.04em;
+    flex-shrink: 0;
+  }
+  .logo-mark {
+    width: 30px; height: 30px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 30% 30%, #fbbf24, var(--court) 60%, #7c2d12);
+    position: relative;
+    box-shadow: 0 4px 12px rgba(217,119,6,0.4);
+  }
+  .logo-mark::before, .logo-mark::after {
+    content: ''; position: absolute; inset: 0;
+    border-radius: 50%;
+    border-top: 1.5px solid rgba(0,0,0,0.6);
+    transform: rotate(35deg);
+  }
+  .logo-mark::after { transform: rotate(-35deg); }
+  .logo strong { color: var(--court-lit); }
+
+  .global-toggles {
+    display: flex; gap: 16px; align-items: center;
+    margin-left: 16px;
+    padding-left: 16px;
+    border-left: 1px solid var(--line);
+  }
+  .toggle-group {
+    display: flex; align-items: center; gap: 8px;
+    font-size: 12px; color: var(--ink-dim);
+    text-transform: uppercase; letter-spacing: 0.08em;
+    font-weight: 600;
+  }
+  .pill-toggle {
+    display: inline-flex;
+    background: var(--bg-3);
+    border-radius: 999px;
+    padding: 2px;
+    border: 1px solid var(--line);
+  }
+  .pill-toggle button {
+    background: transparent; border: 0;
+    color: var(--ink-mute);
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 11px; font-weight: 700;
+    letter-spacing: 0.06em;
+    transition: all 0.15s;
+  }
+  .pill-toggle button.active {
+    background: var(--court-lit);
+    color: var(--bg);
+  }
+  nav.menu { display: flex; gap: 2px; flex: 1; justify-content: flex-end; }
+  .menu-item { position: relative; }
+  .menu-item > a {
+    display: block;
+    padding: 8px 14px;
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 13.5px;
+    color: var(--ink-dim);
+    transition: all 0.15s;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  .menu-item > a:hover, .menu-item.active > a { color: var(--ink); background: var(--bg-2); }
+  .menu-item > a .caret { display: inline-block; margin-left: 4px; font-size: 9px; color: var(--ink-mute); }
+  .dropdown {
+    display: none;
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 0;
+    min-width: 240px;
+    background: var(--bg-2);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 8px;
+    box-shadow: 0 12px 30px rgba(0,0,0,0.5);
+    z-index: 60;
+  }
+  .menu-item:hover .dropdown { display: block; }
+  .dropdown h6 {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink-mute);
+    margin: 12px 8px 6px;
+    padding-top: 6px;
+    border-top: 1px solid var(--line);
+  }
+  .dropdown h6:first-child { margin-top: 4px; padding-top: 0; border-top: 0; }
+  .dropdown a {
+    display: block;
+    padding: 7px 10px;
+    border-radius: 6px;
+    font-size: 13.5px;
+    color: var(--ink-dim);
+    transition: all 0.1s;
+  }
+  .dropdown a:hover { color: var(--ink); background: var(--bg-3); }
+  .api-status {
+    display: flex; align-items: center; gap: 6px;
+    font-size: 11px; font-family: 'JetBrains Mono', monospace;
+    color: var(--ink-mute);
+    padding: 4px 10px;
+    background: var(--bg-2);
+    border-radius: 999px;
+    border: 1px solid var(--line);
+  }
+  .api-status .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--ink-mute); }
+  .api-status.ok .dot { background: var(--up); box-shadow: 0 0 6px var(--up); }
+  .api-status.err .dot { background: var(--down); }
+
+  /* ============================ PAGE BASE ============================ */
+  section { max-width: var(--max); margin: 0 auto; padding: 56px 24px; }
+  h1.page-title {
+    font-family: 'Fraunces', serif;
+    font-weight: 800;
+    font-size: clamp(40px, 5.5vw, 64px);
+    line-height: 0.98;
+    letter-spacing: -0.03em;
+    margin: 0 0 18px;
+  }
+  h1.page-title em { font-style: italic; font-weight: 400; color: var(--court-lit); }
+  .lead {
+    font-size: 18px;
+    color: var(--ink-dim);
+    max-width: 680px;
+    margin: 0 0 12px;
+    line-height: 1.5;
+  }
+  .lead strong { color: var(--ink); font-weight: 600; }
+  .data-points {
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--court-lit);
+    font-weight: 600;
+  }
+  .sub-lead {
+    color: var(--ink-dim);
+    max-width: 680px;
+    font-size: 16px;
+    margin: 0 0 36px;
+  }
+
+  /* ============================ RECENT ============================ */
+  .recent-bar {
+    display: flex; align-items: center; gap: 12px;
+    margin-bottom: 28px; flex-wrap: wrap;
+  }
+  .recent-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; text-transform: uppercase;
+    letter-spacing: 0.16em; color: var(--ink-mute);
+  }
+  .recent-chip {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 6px 12px;
+    background: var(--bg-2); border: 1px solid var(--line);
+    border-radius: 999px;
+    font-size: 13px; color: var(--ink-dim);
+    cursor: pointer; transition: all 0.15s;
+  }
+  .recent-chip:hover { color: var(--ink); border-color: var(--court); }
+  .recent-chip .platform-dot { width: 6px; height: 6px; border-radius: 50%; }
+  .recent-chip .platform-dot.sleeper { background: #00ceb8; }
+  .recent-chip .platform-dot.espn { background: #cc0000; }
+  .recent-chip .platform-dot.fantrax { background: #5a8dee; }
+  .recent-chip .x { color: var(--ink-mute); padding: 0 0 0 4px; }
+  .recent-chip .x:hover { color: var(--down); }
+
+  /* ============================ LEAGUE CARD ============================ */
+  .league-card {
+    background:
+      linear-gradient(135deg, rgba(217,119,6,0.08), transparent 50%),
+      var(--bg-2);
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    padding: 32px;
+    margin-bottom: 60px;
+    position: relative;
+    overflow: hidden;
+  }
+  .league-card::before {
+    content: '';
+    position: absolute;
+    right: -150px; top: -150px;
+    width: 400px; height: 400px;
+    background: radial-gradient(circle, rgba(217,119,6,0.15), transparent 65%);
+    pointer-events: none;
+  }
+  .platform-tabs {
+    display: flex; gap: 4px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    position: relative;
+  }
+  .platform-tabs button {
+    background: var(--bg);
+    border: 1px solid var(--line);
+    color: var(--ink-dim);
+    padding: 9px 16px;
+    border-radius: 8px;
+    font-size: 13px; font-weight: 700;
+    letter-spacing: 0.04em;
+    transition: all 0.15s;
+    display: inline-flex; align-items: center; gap: 8px;
+  }
+  .platform-tabs button:hover { color: var(--ink); }
+  .platform-tabs button.active {
+    background: var(--ink); color: var(--bg);
+    border-color: var(--ink);
+  }
+  .platform-tabs button .plat-dot { width: 8px; height: 8px; border-radius: 50%; }
+  .input-row { display: flex; gap: 10px; flex-wrap: wrap; position: relative; }
+  .input-row input {
+    flex: 1; min-width: 220px;
+    background: var(--bg);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 14px 18px;
+    color: var(--ink);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.15s;
+  }
+  .input-row input:focus { border-color: var(--court-lit); }
+  .input-row input::placeholder { color: var(--ink-mute); }
+  .start-btn {
+    background: var(--court-lit); color: var(--bg);
+    border: none;
+    padding: 0 32px;
+    border-radius: 10px;
+    font-weight: 800;
+    font-size: 14px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    transition: transform 0.1s, background 0.15s;
+    min-height: 50px;
+  }
+  .start-btn:hover { background: #fbbf24; }
+  .start-btn:active { transform: translateY(1px); }
+  .start-btn:disabled { opacity: 0.5; cursor: wait; }
+  .input-help {
+    margin-top: 14px;
+    font-size: 13.5px;
+    color: var(--ink-dim);
+    line-height: 1.55;
+    position: relative;
+  }
+  .input-help code {
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--ink);
+    background: var(--bg);
+    padding: 2px 7px;
+    border-radius: 3px;
+    font-size: 12px;
+  }
+  .input-help strong { color: var(--ink); }
+  .espn-fields {
+    display: none; flex-direction: column; gap: 10px;
+    margin-top: 16px;
+    padding: 16px 18px;
+    background: var(--bg);
+    border-radius: 10px;
+    border: 1px solid var(--line);
+    position: relative;
+  }
+  .espn-fields.show { display: flex; }
+  .espn-fields label {
+    font-size: 11px;
+    color: var(--ink-mute);
+    font-family: 'JetBrains Mono', monospace;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+  .espn-fields input {
+    background: var(--bg-2);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 10px 14px;
+    color: var(--ink);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12.5px;
+    outline: none;
+  }
+  .espn-fields .note {
+    font-size: 12px;
+    color: var(--ink-mute);
+    line-height: 1.5;
+  }
+  .error-box {
+    margin-top: 14px;
+    padding: 12px 16px;
+    background: rgba(248,113,113,0.08);
+    border: 1px solid rgba(248,113,113,0.30);
+    border-radius: 8px;
+    color: var(--down);
+    font-size: 13.5px;
+  }
+
+  /* ============================ FEATURE BLOCKS ============================ */
+  .feature-block {
+    display: grid;
+    grid-template-columns: 1fr 1.2fr;
+    gap: 48px;
+    align-items: center;
+    margin: 0 auto 80px;
+    max-width: var(--max);
+    padding: 0 24px;
+  }
+  .feature-block.reverse { grid-template-columns: 1.2fr 1fr; }
+  .feature-block.reverse .feature-text { order: 2; }
+  .feature-block.reverse .feature-visual { order: 1; }
+  .feature-text h2 {
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+    font-size: clamp(28px, 3.6vw, 40px);
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    margin: 0 0 16px;
+  }
+  .feature-text h2 em { font-style: italic; color: var(--court-lit); }
+  .feature-text p {
+    color: var(--ink-dim);
+    font-size: 16px;
+    line-height: 1.6;
+    margin: 0 0 14px;
+  }
+  .feature-text .eyebrow {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--court-lit);
+    margin-bottom: 14px;
+  }
+  .feature-text .eyebrow::before {
+    content: ''; width: 24px; height: 1px; background: var(--court-lit);
+  }
+  .feature-visual {
+    background: var(--bg-2);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 24px;
+    box-shadow: 0 24px 60px rgba(0,0,0,0.4);
+    overflow: hidden;
+  }
+
+  /* Mock visual styles (the feature illustrations) */
+  .mock-ranked-team {
+    display: grid;
+    grid-template-columns: 50px 1fr auto;
+    gap: 16px; align-items: center;
+    padding: 14px 16px;
+    background: var(--bg);
+    border-radius: 10px;
+    margin-bottom: 8px;
+    border: 1px solid transparent;
+  }
+  .mock-ranked-team.first {
+    border-color: var(--court-lit);
+    background: linear-gradient(135deg, rgba(217,119,6,0.10), var(--bg));
+  }
+  .mock-ranked-team .r {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 32px;
+    color: var(--ink-mute);
+    line-height: 1;
+  }
+  .mock-ranked-team.first .r { color: var(--court-lit); }
+  .mock-ranked-team .name { font-weight: 700; font-size: 15px; }
+  .mock-ranked-team .meta { font-size: 12px; color: var(--ink-mute); font-family: 'JetBrains Mono', monospace; margin-top: 2px; }
+  .mock-ranked-team .v {
+    font-family: 'Bebas Neue', sans-serif; font-size: 22px;
+    color: var(--court-lit); letter-spacing: 0.02em; line-height: 1;
+  }
+  .mock-ranked-team .vl { font-size: 9px; color: var(--ink-mute); text-transform: uppercase; letter-spacing: 0.15em; text-align: right; }
+
+  .mock-pos-row {
+    display: grid;
+    grid-template-columns: 32px 1fr 50px;
+    align-items: center; gap: 12px;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .mock-pos-row:last-child { border-bottom: none; }
+  .mock-pos-row .label {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 18px;
+    letter-spacing: 0.05em;
+  }
+  .mock-pos-row .bar-track {
+    height: 8px;
+    background: var(--bg);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  .mock-pos-row .bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--court-lit), var(--court));
+    border-radius: 4px;
+  }
+  .mock-pos-row .pct {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--ink);
+    text-align: right;
+  }
+
+  .mock-compare-head {
+    display: grid;
+    grid-template-columns: 1fr 32px 1fr;
+    gap: 16px; align-items: center;
+    margin-bottom: 14px;
+  }
+  .mock-compare-head .team { font-weight: 700; font-size: 14px; }
+  .mock-compare-head .vs {
+    font-family: 'Bebas Neue', sans-serif;
+    text-align: center;
+    color: var(--court-lit);
+    font-size: 18px;
+  }
+  .mock-compare-row {
+    display: grid;
+    grid-template-columns: 1fr 80px 1fr;
+    align-items: center; gap: 16px;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--line);
+    font-size: 13px;
+  }
+  .mock-compare-row .v {
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--ink-dim);
+  }
+  .mock-compare-row.win-left .v.left  { color: var(--up); font-weight: 700; }
+  .mock-compare-row.win-right .v.right { color: var(--up); font-weight: 700; }
+  .mock-compare-row .stat {
+    text-align: center;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--ink-mute);
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .mock-compare-row > div:last-child { text-align: right; }
+
+  .mock-orphan {
+    display: grid;
+    grid-template-columns: 32px 1fr;
+    gap: 14px;
+    align-items: center;
+    padding: 10px 12px;
+    border-radius: 8px;
+    margin-bottom: 6px;
+  }
+  .mock-orphan .num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px;
+    text-align: center;
+  }
+  .mock-orphan.orphan { background: rgba(248,113,113,0.08); border: 1px solid rgba(248,113,113,0.25); }
+  .mock-orphan.orphan .num { color: var(--orphan); }
+  .mock-orphan.dispersal { background: rgba(110,107,98,0.10); border: 1px solid var(--line); }
+  .mock-orphan.dispersal .num { color: var(--dispersal); }
+  .mock-orphan.normal { background: var(--bg); border: 1px solid var(--line); }
+  .mock-orphan .nm { font-weight: 600; font-size: 13.5px; }
+  .mock-orphan .badge {
+    font-size: 10px;
+    padding: 1px 6px;
+    border-radius: 3px;
+    font-family: 'JetBrains Mono', monospace;
+    margin-left: 8px;
+    letter-spacing: 0.08em;
+  }
+  .mock-orphan .badge.o { background: rgba(248,113,113,0.18); color: var(--orphan); }
+  .mock-orphan .badge.d { background: rgba(110,107,98,0.20); color: var(--ink-dim); }
+
+  .mock-fa-row {
+    display: grid;
+    grid-template-columns: 40px 1fr auto;
+    gap: 12px; align-items: center;
+    padding: 10px 12px;
+    background: var(--bg);
+    border-radius: 8px;
+    margin-bottom: 6px;
+  }
+  .mock-fa-row .r {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 20px;
+    color: var(--court-lit);
+    line-height: 1;
+    text-align: center;
+  }
+  .mock-fa-row .nm { font-weight: 600; font-size: 13.5px; }
+  .mock-fa-row .mt { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--ink-mute); margin-top: 1px; }
+  .mock-fa-row .v {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px;
+    color: var(--ink);
+    font-weight: 600;
+  }
+
+  /* ============================ LIVE RESULTS ============================ */
+  .league-result {
+    margin-top: 40px;
+    padding-top: 40px;
+    border-top: 1px solid var(--line);
+  }
+  .league-meta {
+    display: flex; gap: 28px;
+    padding: 18px 24px;
+    background: var(--bg-2);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+  }
+  .league-meta div { display: flex; flex-direction: column; gap: 4px; }
+  .league-meta .lbl {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    color: var(--ink-mute);
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .league-meta .val {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 15px;
+    color: var(--ink);
+    font-weight: 600;
+  }
+  .result-controls {
+    display: flex; gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+  }
+  .view-toggle {
+    padding: 8px 16px;
+    background: var(--bg-2);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    color: var(--ink-dim);
+    font-size: 13px;
+    font-weight: 600;
+  }
+  .view-toggle.active {
+    background: var(--court-lit);
+    color: var(--bg);
+    border-color: var(--court-lit);
+  }
+  .share-btn {
+    margin-left: auto;
+    background: var(--bg-2);
+    border: 1px solid var(--line);
+    color: var(--ink-dim);
+    padding: 8px 14px;
+    border-radius: 8px;
+    font-size: 13px;
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .share-btn:hover { color: var(--ink); }
+  .pr-team {
+    background: var(--bg-2);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 18px 22px;
+    margin-bottom: 10px;
+    display: grid;
+    grid-template-columns: 60px 1fr auto;
+    gap: 18px;
+    align-items: center;
+    transition: border-color 0.15s, transform 0.15s;
+  }
+  .pr-team:hover { border-color: var(--ink-mute); transform: translateX(2px); }
+  .pr-team.first {
+    border-color: var(--court-lit);
+    background: linear-gradient(135deg, rgba(217,119,6,0.08), var(--bg-2));
+  }
+  .pr-team.orphan { border-color: rgba(248,113,113,0.35); }
+  .pr-team.orphan .pr-rank { color: var(--orphan); }
+  .pr-team.dispersal { border-color: var(--line); opacity: 0.85; }
+  .pr-team.dispersal .pr-rank { color: var(--dispersal); }
+  .pr-rank { font-family: 'Bebas Neue', sans-serif; font-size: 38px; color: var(--ink-mute); line-height: 1; }
+  .pr-team.first .pr-rank { color: var(--court-lit); }
+  .pr-name { font-weight: 700; font-size: 17px; margin-bottom: 4px; }
+  .pr-meta { font-size: 12.5px; color: var(--ink-mute); font-family: 'JetBrains Mono', monospace; }
+  .pr-meta .top-player { color: var(--ink-dim); }
+  .pr-value-group { text-align: right; }
+  .pr-value {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 30px;
+    color: var(--court-lit);
+    letter-spacing: 0.02em;
+    line-height: 1;
+  }
+  .pr-value-lbl {
+    font-size: 10px;
+    color: var(--ink-mute);
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    margin-top: 4px;
+  }
+  .badge-label {
+    display: inline-block;
+    margin-left: 8px;
+    font-size: 10px;
+    padding: 2px 8px;
+    border-radius: 3px;
+    font-family: 'JetBrains Mono', monospace;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    vertical-align: middle;
+  }
+  .badge-label.orphan { background: rgba(248,113,113,0.15); color: var(--orphan); }
+  .badge-label.dispersal { background: rgba(110,107,98,0.20); color: var(--ink-dim); }
+
+  .pos-team {
+    background: var(--bg-2);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 14px 18px;
+    margin-bottom: 8px;
+  }
+  .pos-team-head {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 10px;
+  }
+  .pos-team-name { font-weight: 600; font-size: 14px; }
+  .pos-team-value { font-family: 'JetBrains Mono', monospace; color: var(--court-lit); font-weight: 700; font-size: 13px; }
+  .pos-bar-row {
+    display: grid; grid-template-columns: 32px 1fr 60px;
+    align-items: center; gap: 12px;
+    padding: 5px 0;
+  }
+  .pos-bar-label {
+    font-family: 'Bebas Neue', sans-serif;
+    color: var(--ink-mute);
+    font-size: 14px;
+  }
+  .pos-bar-track {
+    height: 6px;
+    background: var(--bg-3);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+  .pos-bar-fill { height: 100%; border-radius: 3px; }
+  .pos-bar-val {
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--ink-dim);
+    font-size: 11px;
+    text-align: right;
+  }
+
+  .compare-view { display: grid; grid-template-columns: 1fr 60px 1fr; gap: 16px; align-items: start; }
+  .compare-col {
+    background: var(--bg-2);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 20px;
+  }
+  .compare-col h4 { font-family: 'Fraunces', serif; font-size: 18px; margin: 0 0 8px; }
+  .compare-col .total {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 32px;
+    color: var(--court-lit);
+    line-height: 1;
+    margin-bottom: 16px;
+  }
+  .compare-vs {
+    font-family: 'Bebas Neue', sans-serif;
+    text-align: center;
+    color: var(--ink-mute);
+    font-size: 22px;
+    padding-top: 36px;
+  }
+  .compare-stat-row {
+    display: grid; grid-template-columns: 1fr;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--line);
+    font-size: 13px;
+  }
+  .compare-stat-row:last-child { border-bottom: 0; }
+  .compare-stat-row .label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-mute);
+    margin-bottom: 4px;
+  }
+  .compare-stat-row .v {
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 700;
+    color: var(--ink);
+  }
+  .compare-stat-row .v.win { color: var(--up); }
+  .compare-stat-row .v.lose { color: var(--down); }
+  .compare-picker { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
+  .compare-picker select {
+    flex: 1;
+    background: var(--bg-2);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 10px 14px;
+    color: var(--ink);
+    font-family: inherit;
+    font-size: 13px;
+  }
+
+  .fa-list { display: grid; grid-template-columns: 1fr; gap: 6px; }
+  .fa-item {
+    display: grid;
+    grid-template-columns: 50px 1fr 80px 80px;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    background: var(--bg-2);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+  }
+  .fa-item .r { font-family: 'Bebas Neue', sans-serif; color: var(--court-lit); font-size: 22px; line-height: 1; }
+  .fa-item .nm { font-weight: 600; font-size: 14px; }
+  .fa-item .sub { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--ink-mute); margin-top: 2px; }
+  .fa-item .pos { text-align: center; }
+  .fa-item .v {
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--ink);
+    font-weight: 700;
+    text-align: right;
+  }
+
+  .dispersal-pool {
+    margin-top: 20px;
+    padding: 20px 24px;
+    background: var(--bg-2);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+  }
+  .dispersal-pool h3 {
+    font-family: 'Fraunces', serif;
+    font-size: 20px;
+    margin: 0 0 10px;
+  }
+  .dispersal-pool .small {
+    color: var(--ink-mute);
+    font-size: 12px;
+    margin-bottom: 14px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .dispersal-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 8px;
+  }
+  .dispersal-card {
+    background: var(--bg);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 10px 12px;
+    font-size: 13px;
+  }
+  .dispersal-card .nm { font-weight: 600; }
+  .dispersal-card .v {
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--court-lit);
+    font-size: 12px;
+  }
+
+  .loading { text-align: center; padding: 60px 20px; color: var(--ink-mute); }
+  .loading-spinner {
+    display: inline-block;
+    width: 24px; height: 24px;
+    border: 2px solid var(--line);
+    border-top-color: var(--court-lit);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin-bottom: 14px;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .hidden { display: none !important; }
+
+  /* ============================ FOOTER ============================ */
+  footer.site {
+    margin-top: 80px;
+    background: #06080a;
+    border-top: 1px solid var(--line);
+    padding: 56px 0 28px;
+  }
+  footer .wrap { max-width: var(--max); margin: 0 auto; padding: 0 24px; }
+  .foot-top {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr 1fr 1fr;
+    gap: 36px;
+    padding-bottom: 36px;
+    border-bottom: 1px solid var(--line);
+  }
+  footer h5 {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink-mute);
+    margin: 0 0 14px;
+  }
+  footer ul { list-style: none; padding: 0; margin: 0; }
+  footer ul li { margin-bottom: 8px; }
+  footer ul a {
+    color: var(--ink-dim);
+    font-size: 14px;
+    transition: color 0.15s;
+  }
+  footer ul a:hover { color: var(--court-lit); }
+  .foot-blurb { color: var(--ink-dim); font-size: 14px; max-width: 320px; margin-top: 16px; }
+  .foot-bot {
+    padding-top: 24px;
+    display: flex;
+    justify-content: space-between;
+    color: var(--ink-mute);
+    font-size: 12px;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  /* ============================ RESPONSIVE ============================ */
+  @media (max-width: 980px) {
+    .nav { flex-wrap: wrap; gap: 12px; }
+    nav.menu { order: 3; width: 100%; justify-content: flex-start; overflow-x: auto; }
+    .global-toggles { margin-left: auto; padding-left: 0; border-left: 0; }
+    .feature-block { grid-template-columns: 1fr; gap: 24px; margin-bottom: 56px; }
+    .feature-block.reverse { grid-template-columns: 1fr; }
+    .feature-block.reverse .feature-text { order: 1; }
+    .feature-block.reverse .feature-visual { order: 2; }
+    .compare-view { grid-template-columns: 1fr; }
+    .compare-vs { padding-top: 0; }
+    .foot-top { grid-template-columns: 1fr 1fr; }
+  }
+  @media (max-width: 560px) {
+    section { padding: 36px 18px; }
+    .league-card { padding: 22px; }
+    .feature-block { padding: 0 18px; }
+    .pr-team { grid-template-columns: 44px 1fr auto; padding: 14px 16px; }
+    .pr-value { font-size: 24px; }
+    .menu-item > a { padding: 6px 10px; font-size: 12.5px; }
+    .dropdown { left: -40px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="site">
+  <div class="top-banner">
+    The 2026 Rookie Rankings have arrived! <a href="#">Start your draft prep →</a>
+  </div>
+
+  <div class="nav">
+    <a class="logo">
+      <span class="logo-mark"></span>
+      Hoop<strong>Value</strong>
+    </a>
+
+    <nav class="menu">
+      <div class="menu-item">
+        <a>Dynasty Resources <span class="caret">▾</span></a>
+        <div class="dropdown">
+          <h6>Tools</h6>
+          <a href="#">Trade Calculator</a>
+          <a href="#">Dynasty Rankings</a>
+          <a href="#" style="color: var(--court-lit);">League Power Rankings</a>
+          <a href="#">Trade Database</a>
+          <a href="#">Waiver Database</a>
+          <a href="#">Keep / Trade / Cut</a>
+          <a href="#">Rookie Rankings</a>
+          <h6>More</h6>
+          <a href="#">Draft Database</a>
+          <a href="#">Activity Feed</a>
+          <a href="#">Injury Report</a>
+        </div>
+      </div>
+      <div class="menu-item">
+        <a>Positional Rankings <span class="caret">▾</span></a>
+        <div class="dropdown">
+          <h6>By Position</h6>
+          <a href="#">Point Guards</a>
+          <a href="#">Shooting Guards</a>
+          <a href="#">Small Forwards</a>
+          <a href="#">Power Forwards</a>
+          <a href="#">Centers</a>
+          <h6>Rookies</h6>
+          <a href="#">Rookie Guards</a>
+          <a href="#">Rookie Forwards</a>
+          <a href="#">Rookie Centers</a>
+        </div>
+      </div>
+      <div class="menu-item">
+        <a>Fantasy Resources <span class="caret">▾</span></a>
+        <div class="dropdown">
+          <h6>Redraft</h6>
+          <a href="#">Fantasy Rankings</a>
+          <a href="#">Start / Sit Tool</a>
+          <a href="#">Keep / Trade / Cut</a>
+          <a href="#">Injury Report</a>
+          <a href="#">Activity Feed</a>
+        </div>
+      </div>
+      <div class="menu-item">
+        <a>About <span class="caret">▾</span></a>
+        <div class="dropdown">
+          <a href="#">About HoopValue</a>
+          <a href="#">FAQ</a>
+          <a href="#">Donate</a>
+          <a href="#">Contact Us</a>
+        </div>
+      </div>
+    </nav>
+
+    <div class="global-toggles">
+      <div class="toggle-group">
+        9-Cat
+        <div class="pill-toggle" id="t-format">
+          <button class="active" data-val="9cat">On</button>
+          <button data-val="points">Pts</button>
+        </div>
+      </div>
+      <div class="api-status" id="api-status">
+        <span class="dot"></span><span id="api-status-text">…</span>
+      </div>
+    </div>
+  </div>
+</header>
+
+<section>
+  <h1 class="page-title">Dynasty League Power Rankings</h1>
+  <p class="lead">
+    HoopValue's power rankings use consensus expert values for players and picks from
+    <span class="data-points" id="rank-count">—</span>
+    ranked players (and counting) sourced from a panel of dynasty basketball analysts.
+  </p>
+  <p class="sub-lead">
+    Enter a public Sleeper, ESPN, or Fantrax league ID to see your own dynasty league analyzed and visualized using HoopValue's real-time player values.
+  </p>
+
+  <div class="recent-bar" id="recent-bar">
+    <span class="recent-label">Recent:</span>
+    <span style="color: var(--ink-mute); font-size: 13px;">No recent leagues.</span>
+  </div>
+
+  <div class="league-card">
+    <div class="platform-tabs">
+      <button class="active" data-plat="sleeper">
+        <span class="plat-dot" style="background:#00ceb8"></span>Sleeper
+      </button>
+      <button data-plat="espn">
+        <span class="plat-dot" style="background:#cc0000"></span>ESPN
+      </button>
+      <button data-plat="fantrax">
+        <span class="plat-dot" style="background:#5a8dee"></span>Fantrax
+      </button>
+    </div>
+
+    <div class="input-row">
+      <input id="league-input" type="text" placeholder="sleeper.app/leagues/123456789012345678" />
+      <button class="start-btn" id="analyze-btn">Start</button>
+    </div>
+
+    <div class="input-help" id="input-help">
+      <strong>Enter your Sleeper League ID:</strong> 18 or 19 digits at the end of your league URL. In the Sleeper app it can be found under <code>General League Settings</code>.
+    </div>
+
+    <div class="espn-fields" id="espn-fields">
+      <label>SWID Cookie (private leagues only)</label>
+      <input id="espn-swid" type="text" placeholder="{ABCD-1234-5678-EFGH}" />
+      <label>espn_s2 Cookie</label>
+      <input id="espn-s2" type="text" placeholder="AEB...long token" />
+      <p class="note">
+        Find these in Chrome DevTools → Application → Cookies → fantasy.espn.com. Both cookies are required for private leagues — public leagues don't need them.
+      </p>
+    </div>
+
+    <div class="error-box hidden" id="league-error"></div>
+  </div>
+
+  <div class="league-result hidden" id="league-result">
+    <div class="league-meta" id="league-meta"></div>
+
+    <div class="result-controls">
+      <button class="view-toggle active" data-view="rankings">Power Rankings</button>
+      <button class="view-toggle" data-view="positions">Positional Strength</button>
+      <button class="view-toggle" data-view="compare">Head-to-Head</button>
+      <button class="view-toggle" data-view="free-agents">Free Agents</button>
+      <button class="share-btn" id="share-btn">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+        Share
+      </button>
+    </div>
+
+    <div id="view-rankings"></div>
+    <div id="view-positions" class="hidden"></div>
+    <div id="view-compare" class="hidden"></div>
+    <div id="view-free-agents" class="hidden"></div>
+
+    <div id="dispersal-pool" class="hidden dispersal-pool"></div>
+  </div>
+</section>
+
+<!-- ============================ FEATURE SECTIONS ============================ -->
+<div class="feature-block">
+  <div class="feature-text">
+    <div class="eyebrow">Your Dynasty Team, Ranked</div>
+    <h2>See exactly <em>where you stand</em> in your league.</h2>
+    <p>Put consensus dynasty values to work for you in your own league. See every player and draft pick on every roster, and scope out which managers have assembled the most valuable squad according to expert consensus.</p>
+  </div>
+  <div class="feature-visual">
+    <div class="mock-ranked-team first">
+      <div class="r">1</div>
+      <div>
+        <div class="name">Bricklayers Anonymous</div>
+        <div class="meta">@grayson · 15 players · F-heavy</div>
+      </div>
+      <div>
+        <div class="v">82,491</div>
+        <div class="vl">Total Value</div>
+      </div>
+    </div>
+    <div class="mock-ranked-team">
+      <div class="r">2</div>
+      <div>
+        <div class="name">Wemby's Disciples</div>
+        <div class="meta">@trent · 14 players · Top-heavy</div>
+      </div>
+      <div>
+        <div class="v">79,103</div>
+        <div class="vl">Total Value</div>
+      </div>
+    </div>
+    <div class="mock-ranked-team">
+      <div class="r">3</div>
+      <div>
+        <div class="name">Pick 1.01 Believers</div>
+        <div class="meta">@mara · 13 players · Pick-rich</div>
+      </div>
+      <div>
+        <div class="v">74,820</div>
+        <div class="vl">Total Value</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="feature-block reverse">
+  <div class="feature-text">
+    <div class="eyebrow">The League Landscape</div>
+    <h2>Spot the contenders. <em>Spot the rebuilds.</em></h2>
+    <p>Easily see the stacked teams, whose first-rounders to target, and find trade partners who are weak at a position where your squad has depth — all with up-to-date league data and the consensus expert values HoopValue is built on.</p>
+  </div>
+  <div class="feature-visual">
+    <div style="margin-bottom: 4px; color: var(--ink-dim); font-size: 12px; font-family: 'JetBrains Mono', monospace; letter-spacing: 0.1em; text-transform: uppercase;">@grayson — Bricklayers Anonymous</div>
+    <div class="mock-pos-row">
+      <div class="label" style="color: var(--pos-g);">G</div>
+      <div class="bar-track"><div class="bar-fill" style="width: 62%"></div></div>
+      <div class="pct">62%</div>
+    </div>
+    <div class="mock-pos-row">
+      <div class="label" style="color: var(--pos-f);">F</div>
+      <div class="bar-track"><div class="bar-fill" style="width: 94%"></div></div>
+      <div class="pct">94%</div>
+    </div>
+    <div class="mock-pos-row">
+      <div class="label" style="color: var(--pos-c);">C</div>
+      <div class="bar-track"><div class="bar-fill" style="width: 71%"></div></div>
+      <div class="pct">71%</div>
+    </div>
+    <div style="margin: 16px 0 4px; color: var(--ink-dim); font-size: 12px; font-family: 'JetBrains Mono', monospace; letter-spacing: 0.1em; text-transform: uppercase;">@kade — Hardwood Hostages</div>
+    <div class="mock-pos-row">
+      <div class="label" style="color: var(--pos-g);">G</div>
+      <div class="bar-track"><div class="bar-fill" style="width: 88%"></div></div>
+      <div class="pct">88%</div>
+    </div>
+    <div class="mock-pos-row">
+      <div class="label" style="color: var(--pos-f);">F</div>
+      <div class="bar-track"><div class="bar-fill" style="width: 41%"></div></div>
+      <div class="pct">41%</div>
+    </div>
+    <div class="mock-pos-row">
+      <div class="label" style="color: var(--pos-c);">C</div>
+      <div class="bar-track"><div class="bar-fill" style="width: 56%"></div></div>
+      <div class="pct">56%</div>
+    </div>
+  </div>
+</div>
+
+<div class="feature-block">
+  <div class="feature-text">
+    <div class="eyebrow">Insights at a Glance</div>
+    <h2>Find your <em>trade fits</em>, not just trade partners.</h2>
+    <p>Use the League Overview to quickly see which teams are overweight at one position, needy at another, or hoarding picks and looking toward the future. Find compatible trade ideas that work for both teams, and make informed decisions on which first-rounders might be early or late next year.</p>
+    <p>Or just screenshot your team at #1 and send it to your whole league — that's highly encouraged.</p>
+  </div>
+  <div class="feature-visual">
+    <div style="font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--court-lit); margin-bottom: 14px;">Suggested Trade Fit</div>
+    <div class="mock-compare-head">
+      <div class="team">@grayson sends</div>
+      <div class="vs">⇄</div>
+      <div class="team" style="text-align: right;">@kade sends</div>
+    </div>
+    <div class="mock-compare-row">
+      <div>Jaren Jackson Jr.</div>
+      <div class="stat">Player</div>
+      <div>Tyrese Maxey</div>
+    </div>
+    <div class="mock-compare-row">
+      <div>2027 1st (mid)</div>
+      <div class="stat">Pick</div>
+      <div>—</div>
+    </div>
+    <div class="mock-compare-row">
+      <div class="v left">7,418</div>
+      <div class="stat">Value</div>
+      <div class="v right">7,202</div>
+    </div>
+    <div style="margin-top: 14px; padding: 10px 14px; background: rgba(74,222,128,0.08); border: 1px solid rgba(74,222,128,0.20); border-radius: 6px; font-size: 12.5px; color: var(--up);">
+      Both sides within 3% — fair trade.
+    </div>
+  </div>
+</div>
+
+<div class="feature-block reverse">
+  <div class="feature-text">
+    <div class="eyebrow">Back Up Your Smack Talk</div>
+    <h2>Compare any two teams, <em>head to head</em>.</h2>
+    <p>Reinforce your squad's superiority with data — compare two teams head to head, see roster construction and positional strength, compare depth, and have all current and future draft picks in one easy location.</p>
+  </div>
+  <div class="feature-visual">
+    <div class="mock-compare-head">
+      <div class="team">@grayson</div>
+      <div class="vs">VS</div>
+      <div class="team" style="text-align: right;">@trent</div>
+    </div>
+    <div class="mock-compare-row win-left">
+      <div class="v left">82,491</div>
+      <div class="stat">Total</div>
+      <div class="v right">79,103</div>
+    </div>
+    <div class="mock-compare-row win-right">
+      <div class="v left">28,140</div>
+      <div class="stat">Guards</div>
+      <div class="v right">31,512</div>
+    </div>
+    <div class="mock-compare-row win-left">
+      <div class="v left">35,221</div>
+      <div class="stat">Forwards</div>
+      <div class="v right">28,891</div>
+    </div>
+    <div class="mock-compare-row win-left">
+      <div class="v left">19,130</div>
+      <div class="stat">Centers</div>
+      <div class="v right">18,700</div>
+    </div>
+    <div class="mock-compare-row win-right">
+      <div class="v left">3 picks</div>
+      <div class="stat">Future Picks</div>
+      <div class="v right">5 picks</div>
+    </div>
+  </div>
+</div>
+
+<div class="feature-block">
+  <div class="feature-text">
+    <div class="eyebrow">Commissioner Tools</div>
+    <h2>Orphans to recruit? Dispersal to fill? <em>Sorted.</em></h2>
+    <p>Never get bogged down in a massive spreadsheet ever again. Highlight orphans or dispersal teams in the Power Rankings in minutes — just add a quick label to the team names that need filling, copy the URL, and get recruiting.</p>
+    <p>For orphans, add any of <code style="font-family:'JetBrains Mono',monospace;background:var(--bg);padding:1px 5px;border-radius:3px;font-size:12px;">Open</code>, <code style="font-family:'JetBrains Mono',monospace;background:var(--bg);padding:1px 5px;border-radius:3px;font-size:12px;">New Manager</code>, or <code style="font-family:'JetBrains Mono',monospace;background:var(--bg);padding:1px 5px;border-radius:3px;font-size:12px;">Orphan</code> in parentheses or brackets in the team's name — that team gets highlighted with a red number. For dispersal, any parens or brackets containing <code style="font-family:'JetBrains Mono',monospace;background:var(--bg);padding:1px 5px;border-radius:3px;font-size:12px;">Dispersal</code> get a gray number, and all assets get collected in one place below.</p>
+  </div>
+  <div class="feature-visual">
+    <div class="mock-orphan normal">
+      <div class="num" style="color: var(--ink-mute);">4</div>
+      <div><span class="nm">Hardwood Hostages</span></div>
+    </div>
+    <div class="mock-orphan orphan">
+      <div class="num">5</div>
+      <div><span class="nm">Team Five (Open)</span><span class="badge o">Orphan</span></div>
+    </div>
+    <div class="mock-orphan normal">
+      <div class="num" style="color: var(--ink-mute);">6</div>
+      <div><span class="nm">Backcourt Burglary</span></div>
+    </div>
+    <div class="mock-orphan dispersal">
+      <div class="num">7</div>
+      <div><span class="nm">[Dispersal 1]</span><span class="badge d">Dispersal</span></div>
+    </div>
+    <div class="mock-orphan dispersal">
+      <div class="num">8</div>
+      <div><span class="nm">[Dispersal 2]</span><span class="badge d">Dispersal</span></div>
+    </div>
+    <div style="margin-top: 12px; padding: 10px 12px; background: var(--bg); border: 1px dashed var(--line); border-radius: 6px; font-size: 11.5px; color: var(--ink-mute); font-family: 'JetBrains Mono', monospace;">
+      All dispersal assets aggregated below the Power Rankings.
+    </div>
+  </div>
+</div>
+
+<div class="feature-block reverse">
+  <div class="feature-text">
+    <div class="eyebrow">Top Free Agents</div>
+    <h2>Win the <em>waiver wire</em>.</h2>
+    <p>Gain an edge with waivers or spend FAAB effectively by seeing the best available players in your league — ordered by dynasty value, not by name or position.</p>
+  </div>
+  <div class="feature-visual">
+    <div class="mock-fa-row">
+      <div class="r">1</div>
+      <div>
+        <div class="nm">Bilal Coulibaly</div>
+        <div class="mt">WAS · F · age 21</div>
+      </div>
+      <div class="v">6,902</div>
+    </div>
+    <div class="mock-fa-row">
+      <div class="r">2</div>
+      <div>
+        <div class="nm">Coby White</div>
+        <div class="mt">CHI · G · age 25</div>
+      </div>
+      <div class="v">5,820</div>
+    </div>
+    <div class="mock-fa-row">
+      <div class="r">3</div>
+      <div>
+        <div class="nm">Kel'el Ware</div>
+        <div class="mt">MIA · C · age 21</div>
+      </div>
+      <div class="v">5,401</div>
+    </div>
+    <div class="mock-fa-row">
+      <div class="r">4</div>
+      <div>
+        <div class="nm">Toumani Camara</div>
+        <div class="mt">POR · F · age 25</div>
+      </div>
+      <div class="v">4,988</div>
+    </div>
+  </div>
+</div>
+
+<section style="text-align: center; padding-top: 24px;">
+  <h2 style="font-family: 'Fraunces', serif; font-weight: 600; font-size: clamp(28px, 4vw, 44px); margin: 0 0 14px; letter-spacing: -0.02em;">
+    Your league, <em style="font-style: italic; color: var(--court-lit);">like you've never seen it</em>.
+  </h2>
+  <p style="color: var(--ink-dim); max-width: 600px; margin: 0 auto 24px;">
+    Building a juggernaut means savvily navigating your individual league and staying two steps ahead. HoopValue's Dynasty League Power Rankings are your new secret weapon.
+  </p>
+  <button class="start-btn" id="cta-start" style="padding: 16px 36px;">Get Started</button>
+</section>
+
+<footer class="site">
+  <div class="wrap">
+    <div class="foot-top">
+      <div>
+        <a class="logo" style="margin-bottom: 8px;">
+          <span class="logo-mark"></span>
+          Hoop<strong>Value</strong>
+        </a>
+        <p class="foot-blurb">Dynasty fantasy basketball, ranked by consensus and analyzed by managers.</p>
+      </div>
+      <div>
+        <h5>Dynasty</h5>
+        <ul>
+          <li><a href="#">Trade Calculator</a></li>
+          <li><a href="#">Dynasty Rankings</a></li>
+          <li><a href="#">Power Rankings</a></li>
+          <li><a href="#">Rookie Rankings</a></li>
+          <li><a href="#">Keep / Trade / Cut</a></li>
+        </ul>
+      </div>
+      <div>
+        <h5>Positional</h5>
+        <ul>
+          <li><a href="#">Point Guards</a></li>
+          <li><a href="#">Shooting Guards</a></li>
+          <li><a href="#">Forwards</a></li>
+          <li><a href="#">Centers</a></li>
+          <li><a href="#">Rookies</a></li>
+        </ul>
+      </div>
+      <div>
+        <h5>Company</h5>
+        <ul>
+          <li><a href="#">About</a></li>
+          <li><a href="#">FAQ</a></li>
+          <li><a href="#">Donate</a></li>
+          <li><a href="#">Contact</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="foot-bot">
+      <div>© 2026 HoopValue</div>
+      <div><a href="#">Terms</a> · <a href="#">Privacy</a></div>
+    </div>
+  </div>
+</footer>
+
+<script>
+const API_BASE =
+  window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+    ? 'http://localhost:3001/api'
+    : '/api';
+
+let currentPlatform = 'sleeper';
+let currentView = 'rankings';
+let leagueData = null;
+let recentLeagues = [];
+
+function $(id) { return document.getElementById(id); }
+function escapeHtml(s) {
+  return String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+async function checkHealth() {
+  const pill = $('api-status');
+  const txt = $('api-status-text');
+  try {
+    const r = await fetch(API_BASE.replace('/api', '/healthz'), { mode: 'cors' });
+    if (r.ok) { pill.classList.add('ok'); pill.classList.remove('err'); txt.textContent = 'Live'; }
+    else throw new Error('bad');
+  } catch {
+    pill.classList.add('err'); pill.classList.remove('ok'); txt.textContent = 'Offline';
+  }
+}
+
+async function loadRankingCount() {
+  try {
+    const r = await fetch(`${API_BASE}/rankings?limit=500`);
+    if (!r.ok) return;
+    const d = await r.json();
+    $('rank-count').textContent = (d.count || 0).toLocaleString();
+  } catch {
+    $('rank-count').textContent = '500+';
+  }
+}
+
+const PLATFORM_CONFIG = {
+  sleeper: {
+    placeholder: 'sleeper.app/leagues/123456789012345678',
+    help: '<strong>Enter your Sleeper League ID:</strong> 18 or 19 digits at the end of your league URL. In the Sleeper app it can be found under <code>General League Settings</code>.',
+  },
+  espn: {
+    placeholder: 'fantasy.espn.com/basketball/league?leagueId=123456',
+    help: '<strong>Enter your ESPN League ID:</strong> the digits after <code>leagueId=</code> in your league URL. Private leagues need both cookies below — public leagues don\'t.',
+  },
+  fantrax: {
+    placeholder: 'fantrax.com/fantasy/league/abc123def456ghi7/home',
+    help: '<strong>Enter your Fantrax League ID:</strong> the 16-character alphanumeric token in your league homepage URL. The league must be set public via <code>Commissioner → League Setup → Misc</code>.',
+  },
+};
+document.querySelectorAll('.platform-tabs button').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.platform-tabs button').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    currentPlatform = btn.dataset.plat;
+    const cfg = PLATFORM_CONFIG[currentPlatform];
+    $('league-input').placeholder = cfg.placeholder;
+    $('input-help').innerHTML = cfg.help;
+    $('espn-fields').classList.toggle('show', currentPlatform === 'espn');
+  });
+});
+
+function renderRecent() {
+  const bar = $('recent-bar');
+  if (recentLeagues.length === 0) {
+    bar.innerHTML = '<span class="recent-label">Recent:</span><span style="color: var(--ink-mute); font-size: 13px;">No recent leagues.</span>';
+    return;
+  }
+  const chips = recentLeagues.map((r, i) => `
+    <span class="recent-chip" data-idx="${i}">
+      <span class="platform-dot ${r.platform}"></span>
+      ${escapeHtml(r.name || r.externalId.slice(0, 12) + '…')}
+      <span class="x" data-remove="${i}">×</span>
+    </span>
+  `).join('');
+  bar.innerHTML = `<span class="recent-label">Recent:</span>${chips}`;
+  bar.querySelectorAll('.recent-chip').forEach(el => {
+    el.addEventListener('click', e => {
+      if (e.target.dataset.remove !== undefined) {
+        recentLeagues.splice(Number(e.target.dataset.remove), 1);
+        renderRecent();
+        return;
+      }
+      const item = recentLeagues[Number(el.dataset.idx)];
+      document.querySelectorAll('.platform-tabs button').forEach(b => {
+        b.classList.toggle('active', b.dataset.plat === item.platform);
+      });
+      currentPlatform = item.platform;
+      $('league-input').value = item.externalId;
+      $('espn-fields').classList.toggle('show', item.platform === 'espn');
+      analyze();
+    });
+  });
+}
+
+function addRecent(platform, externalId, name) {
+  recentLeagues = recentLeagues.filter(r => !(r.platform === platform && r.externalId === externalId));
+  recentLeagues.unshift({ platform, externalId, name, ts: Date.now() });
+  recentLeagues = recentLeagues.slice(0, 5);
+  renderRecent();
+}
+
+function extractLeagueId(input, platform) {
+  input = (input || '').trim();
+  if (!input) return '';
+  if (platform === 'sleeper') {
+    const m = input.match(/(\d{15,20})/);
+    return m ? m[1] : input;
+  }
+  if (platform === 'espn') {
+    const m = input.match(/leagueId=(\d+)/);
+    return m ? m[1] : input.replace(/\D/g, '');
+  }
+  if (platform === 'fantrax') {
+    const m = input.match(/league\/([a-z0-9]{10,})/i);
+    return m ? m[1] : input;
+  }
+  return input;
+}
+
+async function analyze() {
+  const btn = $('analyze-btn');
+  const err = $('league-error');
+  const result = $('league-result');
+  err.classList.add('hidden');
+
+  const externalId = extractLeagueId($('league-input').value, currentPlatform);
+  if (!externalId) {
+    err.textContent = 'Please enter a league ID or URL.';
+    err.classList.remove('hidden');
+    return;
+  }
+
+  btn.disabled = true;
+  btn.textContent = 'Loading…';
+
+  const body = { platform: currentPlatform, externalId };
+  if (currentPlatform === 'espn') {
+    const swid = $('espn-swid').value.trim();
+    const s2 = $('espn-s2').value.trim();
+    if (swid) body.espnSwid = swid;
+    if (s2) body.espnS2 = s2;
+  }
+
+  try {
+    const r = await fetch(`${API_BASE}/leagues/sync`, {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify(body),
+    });
+    const data = await r.json();
+    if (!r.ok) throw new Error(data.error || 'Sync failed');
+    leagueData = data;
+    addRecent(currentPlatform, externalId, data.league?.league_name);
+    renderResult();
+    result.classList.remove('hidden');
+    result.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  } catch (e) {
+    err.textContent = e.message;
+    err.classList.remove('hidden');
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Start';
+  }
+}
+
+$('analyze-btn').addEventListener('click', analyze);
+$('cta-start').addEventListener('click', () => {
+  $('league-input').focus();
+  $('league-input').scrollIntoView({ behavior: 'smooth', block: 'center' });
+});
+
+const ORPHAN_RE = /[\(\[][^\)\]]*?(Open( Team)?|New (Manager|Team|Owner)|Orphan)\b[^\)\]]*?[\)\]]/i;
+const DISPERSAL_RE = /[\(\[][^\)\]]*?Dispersal[^\)\]]*?[\)\]]/i;
+function teamTag(name) {
+  if (!name) return null;
+  if (DISPERSAL_RE.test(name)) return 'dispersal';
+  if (ORPHAN_RE.test(name)) return 'orphan';
+  return null;
+}
+
+function renderResult() {
+  if (!leagueData) return;
+  const { league, powerRankings, unmatchedPlayerCount } = leagueData;
+  $('league-meta').innerHTML = `
+    <div><span class="lbl">League</span><span class="val">${escapeHtml(league.league_name) || '—'}</span></div>
+    <div><span class="lbl">Platform</span><span class="val">${league.platform.toUpperCase()}</span></div>
+    <div><span class="lbl">Format</span><span class="val">${(league.scoring_format || '—').toUpperCase()}</span></div>
+    <div><span class="lbl">Teams</span><span class="val">${league.team_count}</span></div>
+    <div><span class="lbl">Last Synced</span><span class="val">${new Date(league.last_synced_at).toLocaleString()}</span></div>
+    ${unmatchedPlayerCount > 0 ? `<div><span class="lbl">Unmatched</span><span class="val" style="color: var(--down);">${unmatchedPlayerCount}</span></div>` : ''}
+  `;
+  renderRankingsView();
+  renderPositionsView();
+  renderCompareView();
+  renderFreeAgentsView();
+  renderDispersalPool();
+}
+
+function renderRankingsView() {
+  const el = $('view-rankings');
+  const teams = leagueData.powerRankings;
+  el.innerHTML = teams.map((t, i) => {
+    const tag = teamTag(t.teamName);
+    const tagClass = tag ? tag : '';
+    const top = (t.topPlayers || []).slice(0, 3).map(p => p.name).join(' · ');
+    const badge = tag === 'orphan'
+      ? '<span class="badge-label orphan">Orphan</span>'
+      : tag === 'dispersal'
+      ? '<span class="badge-label dispersal">Dispersal</span>'
+      : '';
+    return `
+      <div class="pr-team ${i === 0 && !tag ? 'first' : ''} ${tagClass}">
+        <div class="pr-rank">${i + 1}</div>
+        <div>
+          <div class="pr-name">${escapeHtml(t.teamName)}${badge}</div>
+          <div class="pr-meta">
+            ${t.ownerName ? `@${escapeHtml(t.ownerName)} · ` : ''}${t.rosterSize} players
+            ${top ? `<br><span class="top-player">Top: ${escapeHtml(top)}</span>` : ''}
+          </div>
+        </div>
+        <div class="pr-value-group">
+          <div class="pr-value">${t.totalValue.toLocaleString()}</div>
+          <div class="pr-value-lbl">Total Value</div>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function renderPositionsView() {
+  const el = $('view-positions');
+  const teams = leagueData.powerRankings;
+  const maxTotal = Math.max(...teams.map(t => t.totalValue), 1);
+  el.innerHTML = teams.map(t => `
+    <div class="pos-team">
+      <div class="pos-team-head">
+        <span class="pos-team-name">${escapeHtml(t.teamName)}</span>
+        <span class="pos-team-value">${t.totalValue.toLocaleString()}</span>
+      </div>
+      <div class="pos-bar-row">
+        <div class="pos-bar-label">TOT</div>
+        <div class="pos-bar-track">
+          <div class="pos-bar-fill" style="width: ${(t.totalValue / maxTotal * 100).toFixed(0)}%; background: var(--court-lit);"></div>
+        </div>
+        <div class="pos-bar-val">${(t.totalValue / maxTotal * 100).toFixed(0)}%</div>
+      </div>
+      <div style="color: var(--ink-mute); font-size: 11.5px; margin-top: 8px; font-family: 'JetBrains Mono', monospace;">
+        ${t.rosterSize} players · top: ${(t.topPlayers || []).slice(0, 3).map(p => escapeHtml(p.name)).join(', ') || '—'}
+      </div>
+    </div>
+  `).join('');
+}
+
+function renderCompareView() {
+  const el = $('view-compare');
+  const teams = leagueData.powerRankings.filter(t => !teamTag(t.teamName));
+  if (teams.length < 2) { el.innerHTML = '<div class="loading">Need at least 2 teams to compare.</div>'; return; }
+  const opts = teams.map((t, i) => `<option value="${i}">${escapeHtml(t.teamName)}</option>`).join('');
+  el.innerHTML = `
+    <div class="compare-picker">
+      <select id="compare-a">${opts}</select>
+      <select id="compare-b">${opts}</select>
+    </div>
+    <div id="compare-body"></div>
+  `;
+  const aSel = $('compare-a');
+  const bSel = $('compare-b');
+  aSel.value = 0;
+  bSel.value = Math.min(1, teams.length - 1);
+  const update = () => {
+    const a = teams[Number(aSel.value)];
+    const b = teams[Number(bSel.value)];
+    if (!a || !b) return;
+    $('compare-body').innerHTML = `
+      <div class="compare-view">
+        <div class="compare-col">
+          <h4>${escapeHtml(a.teamName)}</h4>
+          <div class="total">${a.totalValue.toLocaleString()}</div>
+          <div class="compare-stat-row"><span class="label">Roster Size</span><span class="v ${a.rosterSize >= b.rosterSize ? 'win' : 'lose'}">${a.rosterSize} players</span></div>
+          <div class="compare-stat-row"><span class="label">Total Value</span><span class="v ${a.totalValue >= b.totalValue ? 'win' : 'lose'}">${a.totalValue.toLocaleString()}</span></div>
+          <div class="compare-stat-row"><span class="label">Avg Player Value</span><span class="v">${a.rosterSize ? Math.round(a.totalValue / a.rosterSize).toLocaleString() : 0}</span></div>
+          <div class="compare-stat-row"><span class="label">Top Player</span><span class="v">${(a.topPlayers || [])[0] ? escapeHtml(a.topPlayers[0].name) : '—'}</span></div>
+        </div>
+        <div class="compare-vs">VS</div>
+        <div class="compare-col">
+          <h4>${escapeHtml(b.teamName)}</h4>
+          <div class="total">${b.totalValue.toLocaleString()}</div>
+          <div class="compare-stat-row"><span class="label">Roster Size</span><span class="v ${b.rosterSize >= a.rosterSize ? 'win' : 'lose'}">${b.rosterSize} players</span></div>
+          <div class="compare-stat-row"><span class="label">Total Value</span><span class="v ${b.totalValue >= a.totalValue ? 'win' : 'lose'}">${b.totalValue.toLocaleString()}</span></div>
+          <div class="compare-stat-row"><span class="label">Avg Player Value</span><span class="v">${b.rosterSize ? Math.round(b.totalValue / b.rosterSize).toLocaleString() : 0}</span></div>
+          <div class="compare-stat-row"><span class="label">Top Player</span><span class="v">${(b.topPlayers || [])[0] ? escapeHtml(b.topPlayers[0].name) : '—'}</span></div>
+        </div>
+      </div>
+    `;
+  };
+  aSel.addEventListener('change', update);
+  bSel.addEventListener('change', update);
+  update();
+}
+
+async function renderFreeAgentsView() {
+  const el = $('view-free-agents');
+  el.innerHTML = '<div class="loading"><div class="loading-spinner"></div>Loading top free agents…</div>';
+  const rosteredIds = new Set();
+  for (const t of leagueData.powerRankings) for (const p of (t.topPlayers || [])) rosteredIds.add(p.id);
+  try {
+    const r = await fetch(`${API_BASE}/rankings?limit=200`);
+    if (!r.ok) throw new Error('Failed to load rankings');
+    const d = await r.json();
+    const fa = d.rankings.filter(p => !rosteredIds.has(p.player_id)).slice(0, 20);
+    if (fa.length === 0) { el.innerHTML = '<div class="loading">No free agents identified.</div>'; return; }
+    el.innerHTML = `
+      <div class="fa-list">
+        ${fa.map((p, i) => `
+          <div class="fa-item">
+            <div class="r">${i + 1}</div>
+            <div>
+              <div class="nm">${escapeHtml(p.name)}</div>
+              <div class="sub">${p.team || ''} · age ${p.age ?? '?'} · ranked #${p.rank}</div>
+            </div>
+            <div class="pos">
+              <span style="display:inline-block;padding:3px 8px;font-size:10.5px;font-weight:700;letter-spacing:0.08em;border-radius:4px;background:var(--bg);color:var(--${p.position === 'G' ? 'pos-g' : p.position === 'F' ? 'pos-f' : 'pos-c'});">${p.position || '—'}</span>
+            </div>
+            <div class="v">${(p.value || 0).toLocaleString()}</div>
+          </div>
+        `).join('')}
+      </div>
+    `;
+  } catch (e) {
+    el.innerHTML = `<div class="error-box">${e.message}</div>`;
+  }
+}
+
+function renderDispersalPool() {
+  const pool = $('dispersal-pool');
+  const dispersalTeams = leagueData.powerRankings.filter(t => teamTag(t.teamName) === 'dispersal');
+  const orphanTeams = leagueData.powerRankings.filter(t => teamTag(t.teamName) === 'orphan');
+  if (dispersalTeams.length === 0 && orphanTeams.length === 0) { pool.classList.add('hidden'); return; }
+
+  let html = '';
+  if (dispersalTeams.length > 0) {
+    const allPlayers = dispersalTeams.flatMap(t => t.topPlayers || []);
+    html += `
+      <h3>Dispersal Pool</h3>
+      <p class="small">Assets from ${dispersalTeams.length} dispersal team(s), aggregated by value.</p>
+      <div class="dispersal-grid">
+        ${allPlayers.sort((a, b) => b.value - a.value).map(p => `
+          <div class="dispersal-card">
+            <div class="nm">${escapeHtml(p.name)}</div>
+            <div class="v">${p.value.toLocaleString()} · rank #${p.rank}</div>
+          </div>
+        `).join('')}
+      </div>
+    `;
+  }
+  if (orphanTeams.length > 0) {
+    html += `
+      <h3 style="margin-top: ${dispersalTeams.length ? '24px' : '0'};">Orphan Teams (${orphanTeams.length})</h3>
+      <p class="small">Recruit a manager — these teams need new ownership.</p>
+      <div class="dispersal-grid">
+        ${orphanTeams.map(t => `
+          <div class="dispersal-card">
+            <div class="nm">${escapeHtml(t.teamName)}</div>
+            <div class="v">${t.totalValue.toLocaleString()} · ${t.rosterSize} players</div>
+          </div>
+        `).join('')}
+      </div>
+    `;
+  }
+  pool.innerHTML = html;
+  pool.classList.remove('hidden');
+}
+
+document.querySelectorAll('.view-toggle').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.view-toggle').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    currentView = btn.dataset.view;
+    ['rankings', 'positions', 'compare', 'free-agents'].forEach(v => {
+      $('view-' + v).classList.toggle('hidden', v !== currentView);
+    });
+  });
+});
+
+$('share-btn').addEventListener('click', async () => {
+  const url = window.location.href;
+  try {
+    await navigator.clipboard.writeText(url);
+    $('share-btn').innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> Copied!';
+    setTimeout(() => {
+      $('share-btn').innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg> Share';
+    }, 1800);
+  } catch {}
+});
+
+$('t-format').querySelectorAll('button').forEach(b => {
+  b.addEventListener('click', () => {
+    $('t-format').querySelectorAll('button').forEach(x => x.classList.remove('active'));
+    b.classList.add('active');
+  });
+});
+
+checkHealth();
+loadRankingCount();
+renderRecent();
+</script>
+</body>
+</html>

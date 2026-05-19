@@ -1,0 +1,43 @@
+services:
+  - type: web
+    name: hoopvalue-api
+    env: node
+    region: oregon
+    plan: free
+    rootDir: backend
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    healthCheckPath: /healthz
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_URL
+        sync: false
+      - key: UPSTASH_REDIS_REST_URL
+        sync: false
+      - key: UPSTASH_REDIS_REST_TOKEN
+        sync: false
+      - key: ALLOWED_ORIGINS
+        sync: false
+      - key: ADMIN_TOKEN
+        generateValue: true
+      - key: SCRAPE_RANKINGS_CRON
+        value: "0 4 * * 1"
+
+  - type: web
+    name: hoopvalue-frontend
+    env: static
+    rootDir: frontend/public
+    buildCommand: ""
+    staticPublishPath: .
+    headers:
+      - path: /*
+        name: Cache-Control
+        value: public, max-age=3600
+    routes:
+      - type: rewrite
+        source: /api/*
+        destination: https://hoopvalue-api.onrender.com/api/*
+      - type: rewrite
+        source: /healthz
+        destination: https://hoopvalue-api.onrender.com/healthz
