@@ -8,6 +8,7 @@ import { rankingsRouter } from './routes/rankings';
 import { leaguesRouter } from './routes/leagues';
 import { adminRouter } from './routes/admin';
 import { runAllScrapers } from './scrapers/run-all';
+import { bootstrapIfNeeded } from './scrapers/bootstrap';
 
 const app = express();
 
@@ -52,9 +53,14 @@ app.use((err: any, _req: any, res: any, _next: any) => {
 });
 
 const port = Number(process.env.PORT ?? 3001);
-app.listen(port, () => {
+app.listen(port, async () => {
   console.log(`HoopValue API listening on :${port}`);
   console.log(`Allowed origins: ${allowedOrigins.length ? allowedOrigins.join(', ') : 'ALL (dev)'}`);
+  try {
+    await bootstrapIfNeeded();
+  } catch (err) {
+    console.error('Bootstrap failed (server still running):', err);
+  }
 });
 
 // Schedule weekly scrapes (Mondays at 04:00 UTC by default)
